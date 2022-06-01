@@ -1,5 +1,5 @@
 //
-//  Converter.swift
+//  Keychain.swift
 //
 //  Copyright © 2022 Aleksei Zaikin.
 //
@@ -22,12 +22,10 @@
 //  THE SOFTWARE.
 //
 
-import Foundation
+public protocol Keychain {
+   func save<Query: Sensitivity.Query>(_ item: Query.Converter.Item, with query: Query) throws
 
-public protocol Converter {
-   associatedtype Item
+   func fetch<Query: Sensitivity.Query>(with query: Query) throws -> Query.Converter.Item
 
-   func convert(_ item: Item) throws -> Data
-
-   func convert(_ data: Data) throws -> Item
+   func delete<Query: Sensitivity.Query>(with query: Query) throws
 }

@@ -1,5 +1,5 @@
 //
-//  Keychain.swift
+//  Query.swift
 //
 //  Copyright © 2022 Aleksei Zaikin.
 //
@@ -22,4 +22,14 @@
 //  THE SOFTWARE.
 //
 
-public protocol Keychain { }
+import Foundation
+
+public protocol Query {
+   associatedtype Converter: Sensitivity.Converter
+
+   var converter: Converter { get }
+
+   var service: String { get }
+
+   var account: String { get }
+}
