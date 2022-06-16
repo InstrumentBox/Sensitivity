@@ -52,10 +52,12 @@ public final class OnDeviceKeychain: Keychain {
       let queryDict = makeQueryDict(basedOn: query, returnsData: false, valueData: valueData)
 
       do {
-         let status = SecItemAdd(queryDict, nil)
+         let status = SecItemAdd(queryDict as CFDictionary, nil)
          try processStatus(status)
       } catch OnDeviceKeychainError.duplication {
-         let status = SecItemUpdate(queryDict, queryDict)
+         var attrsToUpdate = queryDict
+         attrsToUpdate[kSecClass] = nil
+         let status = SecItemUpdate(queryDict as CFDictionary, attrsToUpdate as CFDictionary)
          try processStatus(status)
       } catch {
          throw error
@@ -67,7 +69,7 @@ public final class OnDeviceKeychain: Keychain {
 
       var any: AnyObject?
       try withUnsafeMutablePointer(to: &any) { p in
-         let status = SecItemCopyMatching(queryDict, UnsafeMutablePointer(p))
+         let status = SecItemCopyMatching(queryDict as CFDictionary, UnsafeMutablePointer(p))
          try processStatus(status)
       }
 
@@ -81,7 +83,7 @@ public final class OnDeviceKeychain: Keychain {
    public func delete<Query: Sensitivity.Query>(with query: Query) throws {
       let queryDict = makeQueryDict(basedOn: query, returnsData: false, valueData: nil)
 
-      let status = SecItemDelete(queryDict)
+      let status = SecItemDelete(queryDict as CFDictionary)
       try processStatus(status)
    }
 
@@ -91,7 +93,7 @@ public final class OnDeviceKeychain: Keychain {
       basedOn query: Query,
       returnsData: Bool,
       valueData: Data?
-   ) -> CFDictionary {
+   ) -> [CFString: Any] {
       var queryDict: [CFString: Any] = [
          kSecClass: kSecClassGenericPassword,
          kSecAttrAccessible: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly,
@@ -107,7 +109,7 @@ public final class OnDeviceKeychain: Keychain {
       queryDict[kSecAttrAccessGroup] = accessGroupName
       queryDict[kSecValueData] = valueData
 
-      return queryDict as CFDictionary
+      return queryDict
    }
 
    private func processStatus(_ status: OSStatus) throws {
