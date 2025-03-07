@@ -1,4 +1,4 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 6.0
 
 //
 //  Package.swift
@@ -29,6 +29,14 @@ import PackageDescription
 
 let package = Package(
    name: "Sensitivity",
+   platforms: [
+      .iOS(.v14),
+      .macOS(.v11),
+      .macCatalyst(.v14),
+      .tvOS(.v14),
+      .watchOS(.v7),
+      .visionOS(.v1)
+   ],
    products: [
       .library(name: "Sensitivity", targets: ["Sensitivity"]),
    ],

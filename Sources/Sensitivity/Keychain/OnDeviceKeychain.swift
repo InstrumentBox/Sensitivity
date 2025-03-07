@@ -44,10 +44,7 @@ public final class OnDeviceKeychain: Keychain {
 
    // MARK: - Keychain
 
-   public func save<Query: Sensitivity.Query>(
-      _ item: Query.Converter.Item,
-      with query: Query
-   ) throws {
+   public func save<Item>(_ item: Item, with query: some Query<Item>) async throws {
       let valueData = try query.converter.convert(item)
       let queryDict = makeQueryDict(basedOn: query, returnsData: false, valueData: valueData)
 
@@ -64,7 +61,7 @@ public final class OnDeviceKeychain: Keychain {
       }
    }
 
-   public func fetch<Query: Sensitivity.Query>(with query: Query) throws -> Query.Converter.Item {
+   public func fetch<Item>(with query: some Query<Item>) async throws -> Item {
       let queryDict = makeQueryDict(basedOn: query, returnsData: true, valueData: nil)
 
       var any: AnyObject?
@@ -80,7 +77,7 @@ public final class OnDeviceKeychain: Keychain {
       return try query.converter.convert(data)
    }
 
-   public func delete<Query: Sensitivity.Query>(with query: Query) throws {
+   public func delete(with query: some Query) async throws {
       let queryDict = makeQueryDict(basedOn: query, returnsData: false, valueData: nil)
 
       let status = SecItemDelete(queryDict as CFDictionary)
@@ -89,8 +86,8 @@ public final class OnDeviceKeychain: Keychain {
 
    // MARK: - Private
 
-   private func makeQueryDict<Query: Sensitivity.Query>(
-      basedOn query: Query,
+   private func makeQueryDict(
+      basedOn query: some Query,
       returnsData: Bool,
       valueData: Data?
    ) -> [CFString: Any] {

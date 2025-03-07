@@ -24,8 +24,8 @@
 
 import Foundation
 
-public protocol Converter {
-   associatedtype Item
+public protocol Converter<Item>: Sendable {
+   associatedtype Item: Sendable
 
    func convert(_ item: Item) throws -> Data
 

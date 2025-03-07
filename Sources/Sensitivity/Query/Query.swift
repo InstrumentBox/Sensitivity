@@ -24,10 +24,10 @@
 
 import Foundation
 
-public protocol Query {
-   associatedtype Converter: Sensitivity.Converter
+public protocol Query<Item>: Sendable {
+   associatedtype Item: Sendable
 
-   var converter: Converter { get }
+   var converter: any Converter<Item> { get }
 
    var service: String { get }
 

@@ -24,7 +24,7 @@
 
 import Foundation
 
-public struct JSONConverter<Item: Codable>: Converter {
+public struct JSONConverter<Item: Codable & Sendable>: Converter {
    public let encoder: JSONEncoder
    public let decoder: JSONDecoder
 

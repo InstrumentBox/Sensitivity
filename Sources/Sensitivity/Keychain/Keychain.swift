@@ -22,10 +22,10 @@
 //  THE SOFTWARE.
 //
 
-public protocol Keychain {
-   func save<Query: Sensitivity.Query>(_ item: Query.Converter.Item, with query: Query) throws
+public protocol Keychain: Sendable {
+   func save<Item: Sendable>(_ item: Item, with query: some Query<Item>) async throws
 
-   func fetch<Query: Sensitivity.Query>(with query: Query) throws -> Query.Converter.Item
+   func fetch<Item: Sendable>(with query: some Query<Item>) async throws -> Item
 
-   func delete<Query: Sensitivity.Query>(with query: Query) throws
+   func delete(with query: some Query) async throws
 }
